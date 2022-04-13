@@ -23,3 +23,32 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+const LOCAL_STORAGE_APP_USER_KEY = "loggedBlogappUser";
+const BASE_API_URL = "http://localhost:8080";
+const BASE_FE_URL = "http://localhost:3000";
+
+Cypress.Commands.add("login", ({ username, password }) => {
+  cy.request("POST", BASE_API_URL + "/api/login", {
+    username,
+    password,
+  }).then(({ body }) => {
+    localStorage.setItem(LOCAL_STORAGE_APP_USER_KEY, JSON.stringify(body));
+    cy.visit(BASE_FE_URL);
+  });
+});
+
+Cypress.Commands.add("createBlog", ({ title, author, url, likes }) => {
+  cy.request({
+    url: BASE_API_URL + "/api/blogs",
+    method: "POST",
+    body: { title, author, url, likes },
+    headers: {
+      Authorization: `bearer ${
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_APP_USER_KEY)).token
+      }`,
+    },
+  });
+
+  cy.visit(BASE_FE_URL);
+});

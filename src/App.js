@@ -6,6 +6,7 @@ import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import './App.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -31,12 +32,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setMessage(null);
-    }, 5000);
-  }, [message]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
